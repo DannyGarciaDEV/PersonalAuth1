@@ -1,18 +1,20 @@
-var thumbUp = document.getElementsByClassName("fa-water");
+var matched = document.getElementsByClassName("fa-check");
 var trash = document.getElementsByClassName("fa-trash");
-var thumbDown = document.getElementsByClassName("fa-person-walking-arrow-right");
-Array.from(thumbUp).forEach(function(element) {
+
+Array.from(matched).forEach(function(element) {
       element.addEventListener('click', function(){
+       
         const name = this.parentNode.parentNode.childNodes[1].innerText
-        const msg = this.parentNode.parentNode.childNodes[3].innerText
-        const thumbUp = parseFloat(this.parentNode.parentNode.childNodes[5].innerText)
+        
+        const penPal = this.parentNode.parentNode.childNodes[3].value
+        console.log('itWorks', this, name, penPal)
         fetch('messages', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             'name': name,
-            'msg': msg,
-            'thumbUp':thumbUp
+            
+            'newMatch': penPal
           })
         })
         .then(response => {
@@ -24,34 +26,12 @@ Array.from(thumbUp).forEach(function(element) {
         })
       });
 });
-Array.from(thumbDown).forEach(function(element) {
-  element.addEventListener('click', function(){
-    const name = this.parentNode.parentNode.childNodes[1].innerText
-    const msg = this.parentNode.parentNode.childNodes[3].innerText
-    const thumbUp = parseFloat(this.parentNode.parentNode.childNodes[5].innerText)
-    fetch('messages/thumbDown', {
-      method: 'put',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'name': name,
-        'msg': msg,
-        'thumbUp': thumbUp
-      })
-    })
-    .then(response => {
-      if (response.ok) return response.json()
-    })
-    .then(data => {
-      console.log(data)
-      window.location.reload(true)
-    })
-  });
-});
+
 
 Array.from(trash).forEach(function(element) {
       element.addEventListener('click', function(){
         const name = this.parentNode.parentNode.childNodes[1].innerText
-        const msg = this.parentNode.parentNode.childNodes[3].innerText
+        const penPal = this.parentNode.parentNode.childNodes[3].value
         fetch('messages', {
           method: 'delete',
           headers: {
@@ -59,7 +39,9 @@ Array.from(trash).forEach(function(element) {
           },
           body: JSON.stringify({
             'name': name,
-            'msg': msg
+          
+            'matched': penPal
+            
           })
         }).then(function (response) {
           window.location.reload()

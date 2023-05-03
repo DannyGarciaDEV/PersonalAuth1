@@ -3,6 +3,8 @@ module.exports = function(app, passport, db) {
 // normal routes ===============================================================
 
     // show the home page (will also have our login links)
+
+
     app.get('/', function(req, res) {
         res.render('index.ejs');
     });
@@ -11,9 +13,11 @@ module.exports = function(app, passport, db) {
     app.get('/profile', isLoggedIn, function(req, res) {
         db.collection('messages').find().toArray((err, result) => {
           if (err) return console.log(err)
+          let matched =  result.filter(e => e.emailMatch)
           res.render('profile.ejs', {
             user : req.user,
-            messages: result
+            messages: result,
+            matched: matched
           })
         })
     });
@@ -29,7 +33,7 @@ module.exports = function(app, passport, db) {
 // message board routes ===============================================================
 
     app.post('/messages', (req, res) => {
-      db.collection('messages').save({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
+      db.collection('messages').save({name: req.body.name, emailMatch: req.body.emailMatch}, (err, result) => {
         if (err) return console.log(err)
         console.log('saved to database')
         res.redirect('/profile')
@@ -41,9 +45,9 @@ module.exports = function(app, passport, db) {
 
     app.put('/messages', (req, res) => {
       db.collection('messages')
-      .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+      .findOneAndUpdate({name: req.body.name, emailMatch: req.body.emailMatch}, {
         $set: {
-          thumbUp:req.body.thumbUp + 1 + "Drink Water"
+          emailMatch: req.body.newMatch
         }
       }, {
         sort: {_id: -1},
@@ -53,11 +57,12 @@ module.exports = function(app, passport, db) {
         res.send(result)
       })
     })
-    app.put('/messages/thumbDown', (req, res) => {
+    app.put('/messages', (req, res) => {
       db.collection('messages')
-      .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+      .findOneAndUpdate({name: req.body.name, newMatch: req.body.newMatch}, {
         $set: {
-          thumbUp:req.body.thumbUp - 1 + "Go Awayy"
+
+          newMatch: req.body.newMatch
         }
       }, {
         sort: {_id: -1},
@@ -69,7 +74,7 @@ module.exports = function(app, passport, db) {
     })
 
     app.delete('/messages', (req, res) => {
-      db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
+      db.collection('messages').findOneAndDelete({name: req.body.name, emailMatch: req.body.emailMatch}, (err, result) => {
         if (err) return res.send(500, err)
         res.send('Message deleted!')
       })

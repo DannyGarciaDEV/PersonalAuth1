@@ -40,7 +40,7 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 
 // required for passport
 app.use(session({
-    secret: 'rcbootcamp2023', // session secret
+    secret: 'dannydev', // session secret
     resave: true,
     saveUninitialized: true
 }));

@@ -10,7 +10,7 @@ body{
   background-color: rgb(237, 117, 151);
 }
 span{
-  color: dodgerblue;
+  color: rgb(24, 32, 39);
 }
 
 .wells{
@@ -70,4 +70,8 @@ textarea:focus {
   outline: none;
   border-color: #4267B2;
   box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+}
+
+number-input{
+color: green;
 }
